@@ -1,0 +1,1309 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/6/2022 7:56:49 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-PALOMAA"
+  DTS:CreatorName="DESKTOP-PALOMAA\Paloma_Alves"
+  DTS:DTSID="{2EA6912E-814A-42C2-833D-CD3A1396B918}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LocaleID="1046"
+  DTS:ObjectName="Package"
+  DTS:PackageType="5"
+  DTS:VersionBuild="22"
+  DTS:VersionGUID="{89553A81-0DF1-4BC1-82C4-BF5EB6197BBC}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[BaseDadosDesafio.csv 1]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{D388CC6D-2AAB-4CE6-932B-1C4EE3D77B02}"
+      DTS:ObjectName="BaseDadosDesafio.csv 1">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\ARQUIVO\BaseDadosDesafio.csv" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\CARGA DIMENSOES"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Contêiner da Sequência"
+      DTS:DTSID="{3E82CE0A-E798-410D-BCB1-62B71FDB37E4}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="CARGA DIMENSOES">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\CARGA DIMENSOES\CARGA PAIS"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{9E5CC91A-E7E6-4396-AC3B-B5898EC1FD32}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA PAIS"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              SQLTask:SqlStatementSource="BEGIN TRANSACTION;  &#xA;&#x9;DECLARE @VDATA_INI DATETIME;&#xA;&#x9;SET @VDATA_INI= GETDATE();&#xA;BEGIN TRY  &#xA;&#xA;&#xA;MERGE D_PAIS AS Destino&#xA;&#xA;USING (SELECT DISTINCT PAIS FROM STG_VENDAS) AS Origem&#xA;&#xA;ON Destino.NOME_PAIS= Origem.PAIS&#xA;&#xA;-- Há registro no destino e na origem&#xA;WHEN MATCHED &#xA;&#xA;THEN &#xA;    UPDATE SET NOME_PAIS = Origem.PAIS&#xA;&#xA;--Quando não há registro no destino e há na origem&#xA;WHEN NOT MATCHED &#xA;&#xA;THEN &#xA;    INSERT (NOME_PAIS) VALUES (Origem.PAIS);&#xA;&#xA;END TRY  &#xA;BEGIN CATCH&#xA; &#x9;IF @@TRANCOUNT &gt; 0  &#xA;        ROLLBACK TRANSACTION; &#xA;INSERT INTO [dbo].[LOG_CARGAS]&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'ERRO',&#xA;        'CARGA PAIS',&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;        &#xA;END CATCH;  &#xA;&#xA;INSERT INTO LOG_CARGAS&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'SUCESSO',&#xA;        'CARGA PAIS',&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;IF @@TRANCOUNT &gt; 0  &#xA;    COMMIT TRANSACTION;  &#xA;GO  &#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\CARGA DIMENSOES\CARGA PRODUTO"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{AFDEE761-AABF-49C3-AC8C-E888A0AABA66}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA PRODUTO"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              SQLTask:SqlStatementSource="BEGIN TRANSACTION;  &#xA;&#x9;DECLARE @VDATA_INI DATETIME;&#xA;    DECLARE @VPROCESSO VARCHAR(30);&#xA;&#x9;SET @VDATA_INI= GETDATE();&#xA;    SET @VPROCESSO= 'CARGA PRODUTO'&#xA;BEGIN TRY  &#xA;&#xA;&#xA;MERGE D_PRODUTO AS Destino&#xA;&#xA;USING (SELECT DISTINCT PRODUTO FROM STG_VENDAS) AS Origem&#xA;&#xA;ON Destino.NOME_PRODUTO = Origem.PRODUTO&#xA;&#xA;-- Há registro no destino e na origem&#xA;WHEN MATCHED &#xA;&#xA;THEN &#xA;    UPDATE SET NOME_PRODUTO= Origem.PRODUTO&#xA;&#xA;--Quando não há registro no destino e há na origem&#xA;WHEN NOT MATCHED &#xA;&#xA;THEN &#xA;INSERT (NOME_PRODUTO) VALUES (Origem.PRODUTO);&#xA;&#xA; END TRY  &#xA;BEGIN CATCH&#xA; &#x9;IF @@TRANCOUNT &gt; 0  &#xA;        ROLLBACK TRANSACTION; &#xA;&#xA;INSERT INTO [dbo].[LOG_CARGAS]&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'ERRO',&#xA;        @VPROCESSO,&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;END CATCH;  &#xA;INSERT INTO LOG_CARGAS&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'SUCESSO',&#xA;        @VPROCESSO,&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;IF @@TRANCOUNT &gt; 0  &#xA;    COMMIT TRANSACTION;  &#xA;GO  &#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\CARGA DIMENSOES\CARGA SEGMENTO"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{E72ABF0F-E349-4F21-8103-459FD82FB5B5}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA SEGMENTO"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              SQLTask:SqlStatementSource="BEGIN TRANSACTION;  &#xA;&#x9;DECLARE @VDATA_INI DATETIME;&#xA;&#x9;SET @VDATA_INI= GETDATE();&#xA;BEGIN TRY  &#xA;&#xA;MERGE D_SEGMENTO AS Destino&#xA;&#xA;USING (SELECT DISTINCT SEGMENTO FROM STG_VENDAS) AS Origem&#xA;&#xA;ON Destino.NOME_SEGMENTO = Origem.SEGMENTO&#xA;&#xA;-- Há registro no destino e na origem&#xA;WHEN MATCHED &#xA;&#xA;THEN &#xA;    UPDATE SET NOME_SEGMENTO = Origem.SEGMENTO&#xA;&#xA;--Quando não há registro no destino e há na origem&#xA;WHEN NOT MATCHED &#xA;&#xA;THEN &#xA;    INSERT (NOME_SEGMENTO) VALUES (Origem.SEGMENTO);&#xA;&#xA;   END TRY &#xA;BEGIN CATCH&#xA; &#x9;IF @@TRANCOUNT &gt; 0  &#xA;        ROLLBACK TRANSACTION; &#xA;&#xA;INSERT INTO [dbo].[LOG_CARGAS]&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'ERRO',&#xA;        'CARGA SEGMENTO',&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;        &#xA;END CATCH; &#xA;INSERT INTO LOG_CARGAS&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'SUCESSO',&#xA;       'CARGA SEGMENTO',&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;IF @@TRANCOUNT &gt; 0  &#xA;    COMMIT TRANSACTION;  &#xA;GO  " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\CARGA DIMENSOES\CARGA TIPO_DESCONTO"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{2D45F977-FFB2-453A-8C41-BDDB7E4D5400}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA TIPO_DESCONTO"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              SQLTask:SqlStatementSource="BEGIN TRANSACTION;  &#xA;&#x9;DECLARE @VDATA_INI DATETIME;&#xA;    DECLARE @VPROCESSO VARCHAR(30);&#xA;&#x9;SET @VDATA_INI= GETDATE();&#xA;    SET @VPROCESSO= 'CARGA TIPO_DESCONTO'&#xA;BEGIN TRY  &#xA;&#xA;&#xA;MERGE D_TIPO_DESCONTO AS Destino&#xA;&#xA;USING (SELECT DISTINCT TIPO_DESCONTO FROM STG_VENDAS) AS Origem&#xA;&#xA;ON Destino.NOME_TIPO_DESCONTO = Origem.TIPO_DESCONTO&#xA;&#xA;-- Há registro no destino e na origem&#xA;WHEN MATCHED &#xA;&#xA;THEN &#xA;    UPDATE SET NOME_TIPO_DESCONTO= Origem.TIPO_DESCONTO&#xA;&#xA;--Quando não há registro no destino e há na origem&#xA;WHEN NOT MATCHED &#xA;&#xA;THEN &#xA;    INSERT (NOME_TIPO_DESCONTO) VALUES (Origem.TIPO_DESCONTO);&#xA;&#xA; END TRY  &#xA;BEGIN CATCH&#xA; &#x9;IF @@TRANCOUNT &gt; 0  &#xA;        ROLLBACK TRANSACTION; &#xA;INSERT INTO [dbo].[LOG_CARGAS]&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'ERRO',&#xA;        @VPROCESSO,&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;        &#xA;END CATCH;  &#xA;INSERT INTO LOG_CARGAS&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;&#x9;&#x9;   [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'SUCESSO',&#xA;        @VPROCESSO,&#xA;&#x9;&#x9;@VDATA_INI,&#xA;&#x9;&#x9;GETDATE()&#xA;&#x9;&#x9;)&#xA;&#xA;IF @@TRANCOUNT &gt; 0  &#xA;    COMMIT TRANSACTION;  &#xA;GO  &#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\CARGA DIMENSOES.PrecedenceConstraints[Restrição]"
+          DTS:CreationName=""
+          DTS:DTSID="{907CA309-95A3-4C29-AE95-22C0C1ACB2F7}"
+          DTS:From="Package\CARGA DIMENSOES\CARGA SEGMENTO"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restrição"
+          DTS:To="Package\CARGA DIMENSOES\CARGA PAIS" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\CARGA DIMENSOES.PrecedenceConstraints[Restrição 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{E477B2BC-280C-4764-867E-630C09ACDD1A}"
+          DTS:From="Package\CARGA DIMENSOES\CARGA PAIS"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restrição 1"
+          DTS:To="Package\CARGA DIMENSOES\CARGA PRODUTO" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\CARGA DIMENSOES.PrecedenceConstraints[Restrição 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{28CEDB5F-185C-4674-96AD-875427EC1E11}"
+          DTS:From="Package\CARGA DIMENSOES\CARGA PRODUTO"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restrição 2"
+          DTS:To="Package\CARGA DIMENSOES\CARGA TIPO_DESCONTO" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\CARGA FATO"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Contêiner da Sequência"
+      DTS:DTSID="{41B73C31-9577-485A-9219-C2C711F0AD5C}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="CARGA FATO">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\CARGA FATO\CARGA FATO"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{EDA1B252-DAA2-4E67-9FA3-082E7451E8A5}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA FATO"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              SQLTask:SqlStatementSource="BEGIN TRANSACTION;  &#xA;   DECLARE @VDATA_INI DATETIME;&#xA;    DECLARE @VPROCESSO VARCHAR(30);&#xA;    SET @VDATA_INI= GETDATE();&#xA;    SET @VPROCESSO= 'CARGA FATO'&#xA;BEGIN TRY  &#xA;&#xA;&#xA;MERGE FATO_VENDA AS Destino&#xA;&#xA;USING (&#xA;SELECT &#xA;       b.Id_SEGMENTO,&#xA;       c.Id_PAIS,&#xA;       d.Id_PRODUTO,&#xA;       e.Id_TIPO_DESCONTO,&#xA;       f.Id_DATA_VENDA,&#xA;       COALESCE(g.id_Pais,999) as Id_PAIS,&#xA;       CAST(REPLACE(a.QTDE_VENDA,',','.') AS decimal(10,2)) AS QTDE_VENDA,&#xA;       CAST(REPLACE(a.PRECO_CUSTO,',','.') AS decimal(10,2))AS PRECO_CUSTO,&#xA;       CAST(REPLACE(a.PECO_VENDA,',','.') AS decimal(10,2))AS PECO_VENDA,&#xA;       CAST(REPLACE(a.VENDA_BRUTA,',','.') AS decimal(10,2))AS VENDA_BRUTA,&#xA;       CAST(REPLACE(a.VENDA_BRUTA,',','.') AS decimal(10,2))AS VENDA_BRUTA,&#xA;       CAST(REPLACE(a.DESCONTO,',','.') AS decimal(10,2))AS DESCONTO,&#xA;       CAST(REPLACE(a.VENDAS,',','.') AS decimal(10,2))AS VENDAS,&#xA;       CAST(REPLACE(a.CUSTO_VENDA,',','.') AS decimal(10,2))AS CUSTO_VENDA,&#xA;       CAST(REPLACE(a.LUCRO,',','.') AS decimal(10,2))AS LUCRO&#xA;  FROM STG_VENDAS a&#xA;    LEFT JOIN D_SEGMENTO b&#xA;&#x9;  ON a.SEGMENTO=b.NOME_SEGMENTO&#xA;LEFT JOIN D_PAIS c&#xA;&#x9;  ON a.PAIS=c.NOME_PAIS&#xA;&#xA;    LEFT JOIN D_PRODUTO d&#xA;&#x9;  ON a.PRODUTO=d.NOME_PRODUTO&#xA;&#xA;    LEFT JOIN D_TIPO_DESCONTO e&#xA;&#x9;  ON a.TIPO_DESCONTO=e.NOME_TIPO_DESCONTO&#xA;&#xA;    LEFT JOIN D_DATA_VENDA f&#xA;&#x9;  ON a.DATA_VENDA=f.NOME_DATA_VENDA) AS Origem&#xA;&#xA; ON Destino.VENDAS = Origem.VENDAS&#xA;WHEN MATCHED &#xA; THEN &#xA;    UPDATE SET  Id_SEGMENTO=origem.Id_SEGMENTO, &#xA;                Id_PAIS=origem.Id_PAIS,&#xA;                Id_PRODUTO=origem.Id_PRODUTO,&#xA;                Id_TIPO_DESCONTO=origem.Id.TIPO_DESCONTO,&#xA;                QTDE_VENDA=origem.QTDE_VENDA,&#xA;                PRECO_CUSTO=origem.PRECO_CUSTO,&#xA;                PECO_VENDA=origem.PECO_VENDA,&#xA;                VENDA_BRUTA=origem.VENDA_BRUTA,&#xA;                DESCONTO=origem.DESCONTO,&#xA;                VENDAS=origem.VENDAS,&#xA;                CUSTO_VENDA=origem_CUSTO_VENDA,&#xA;                LUCRO=origem.LUCRO&#xA;&#xA;--Quando não há registro no destino e há na origem&#xA;WHEN NOT MATCHED &#xA; THEN &#xA;   INSERT  &#xA;      (Id_SEGMENTO,&#xA;       Id_PAIS,&#xA;       Id_PRODUTO,&#xA;       Id_TIPO_DESCONTO,&#xA;       Id_DATA_VENDA,&#xA;       QTDE_VENDA,&#xA;       PRECO_CUSTO,&#xA;       PECO_VENDA,&#xA;       VENDA_BRUTA,&#xA;       DESCONTO,&#xA;       VENDAS,&#xA;       CUSTO_VENDA,&#xA;       LUCRO)&#xA;&#xA;     VALUES&#xA;           (origem.Id_SEGMENTO, &#xA;            origem.Id_PAIS,&#xA;            origem.Id_PRODUTO,&#xA;            origem.Id.TIPO_DESCONTO,&#xA;            origem.QTDE_VENDA,&#xA;            origem.PRECO_CUSTO,&#xA;            origem.PECO_VENDA,&#xA;            origem.VENDA_BRUTA,&#xA;            origem.DESCONTO,&#xA;            origem.VENDAS,&#xA;            origem_CUSTO_VENDA,&#xA;            origem.LUCRO);&#xA;&#xA;END TRY  &#xA;BEGIN CATCH&#xA;   IF @@TRANCOUNT &gt; 0  &#xA;        ROLLBACK TRANSACTION; &#xA;&#xA;INSERT INTO [dbo].[LOG_CARGAS]&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;         [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'ERRO',&#xA;        @VPROCESSO,&#xA;      @VDATA_INI,&#xA;      GETDATE()&#xA;      )&#xA;&#xA;        &#xA;END CATCH;  &#xA;NSERT INTO LOG_CARGAS&#xA;           ([NUMERO_ERRO],&#xA;           [SERVERIDADE_ERRO],&#xA;           [ESTADO_ERRO],&#xA;           [PROC_ERRO],&#xA;           [LINHA_ERRO],&#xA;           [MSG_ERRO],&#xA;           [SITUACAO],&#xA;           [PROCESSO],&#xA;           [DATA_INI],&#xA;           [DATA_FIM])&#xA;     VALUES&#xA;        (ERROR_NUMBER(),&#xA;        ERROR_SEVERITY(),&#xA;        ERROR_STATE(),&#xA;        ERROR_PROCEDURE(),&#xA;        ERROR_LINE() ,&#xA;        ERROR_MESSAGE() ,&#xA;        'SUCESSO',&#xA;        @VPROCESSO,&#xA;      @VDATA_INI,&#xA;      GETDATE()&#xA;      )&#xA;&#xA;IF @@TRANCOUNT &gt; 0  &#xA;    COMMIT TRANSACTION;  &#xA;GO  " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\CARGA INICIAL"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Contêiner da Sequência"
+      DTS:DTSID="{051C618F-594F-442F-9C03-525443C47265}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="CARGA INICIAL">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\CARGA INICIAL\CARGA EM MASSA"
+          DTS:CreationName="Microsoft.BulkInsertTask"
+          DTS:Description="Tarefa Inserção em Massa"
+          DTS:DTSID="{31D96544-5A07-47A2-9833-9630EE6794DF}"
+          DTS:ExecutableType="Microsoft.BulkInsertTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA EM MASSA"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <BulkInsertTask:BulkInsertTaskData
+              BulkInsertTask:CheckConstraints="False"
+              BulkInsertTask:CodePage="65001"
+              BulkInsertTask:SourceConnectionName="{D388CC6D-2AAB-4CE6-932B-1C4EE3D77B02}"
+              BulkInsertTask:DestinationConnectionName="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              BulkInsertTask:DestinationTableName="[dbo].[STG_VENDAS]"
+              BulkInsertTask:FirstRow="2"
+              BulkInsertTask:FieldTerminator="Semicolon {;}"
+              BulkInsertTask:RowTerminator="Tab" xmlns:BulkInsertTask="www.microsoft.com/sqlserver/dts/tasks/bulkinserttask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\CARGA INICIAL\TRUNCAE STG_VENDAS"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarefa Executar SQL"
+          DTS:DTSID="{20D2290E-B162-4A7B-B746-FBB5E891F43F}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="TRUNCAE STG_VENDAS"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}"
+              SQLTask:SqlStatementSource="TRUNCATE TABLE STG_VENDAS;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\CARGA INICIAL.PrecedenceConstraints[Restrição]"
+          DTS:CreationName=""
+          DTS:DTSID="{C4031DEA-4995-4254-8B5A-5FED257D03B8}"
+          DTS:From="Package\CARGA INICIAL\TRUNCAE STG_VENDAS"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restrição"
+          DTS:To="Package\CARGA INICIAL\CARGA EM MASSA" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\EX CARGA DF"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Contêiner da Sequência"
+      DTS:DTSID="{A8695394-107E-4D1F-A8A3-C42B9D1A4220}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="EX CARGA DF">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\EX CARGA DF\CARGA STG"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Tarefa Fluxo de Dados"
+          DTS:DTSID="{251B4073-1575-474D-9746-C05CD8F0BB19}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="CARGA STG"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\EX CARGA DF\CARGA STG\Destino STG"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="Destino OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; Todos os Direitos Reservados; http://www.microsoft.com/sql/support;4"
+                  description="Destino OLE DB"
+                  name="Destino STG"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                      name="OpenRowset">[DESTINO_STG]</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="O comando SQL a ser executado."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica o modo usado para acessar o banco de dados."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indica se os valores fornecidos para colunas de identidade serão copiados no destino. Se false, os valores para colunas de identidade serão gerados automaticamente no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indica se as colunas que contêm null terão null inserido no destino. Se false, as colunas que contêm null terão seus valores padrão inseridos no destino. Aplicável apenas se o carregamento rápido estiver ativado."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica as opções a serem usadas com o carregamento rápido. Aplicável apenas se o carregamento rápido estiver ativado."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica quando confirmações são emitidas durante a inserção de dados. Um valor de 0 especifica que uma confirmação será emitida ao final da inserção de dados. Aplicável somente se o carregamento rápido estiver ativado."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\EX CARGA DF\CARGA STG\Destino STG.Connections[OleDbConnection]"
+                      connectionManagerID="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}:external"
+                      connectionManagerRefId="Project.ConnectionManagers[__.DW_09]"
+                      description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB]"
+                      errorOrTruncationOperation="Inserir"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="Entrada de Destino OLE DB">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[SEGMENTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="SEGMENTO"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[SEGMENTO]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[SEGMENTO]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[PAIS]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="PAIS"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PAIS]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PAIS]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[PRODUTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="PRODUTO"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PRODUTO]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PRODUTO]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[TIPO_DESCONTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="TIPO_DESCONTO"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[TIPO_DESCONTO]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[TIPO_DESCONTO]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[QTDE_VENDA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="QTDE_VENDA"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[QTDE_VENDA]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[QTDE_VENDA]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[PRECO_CUSTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="PRECO_CUSTO"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PRECO_CUSTO]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PRECO_CUSTO]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[DATA_VENDA]"
+                          cachedDataType="dbDate"
+                          cachedName="DATA_VENDA"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_VENDA]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[DATA_VENDA]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[PECO_VENDA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="PECO_VENDA"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PECO_VENDA]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PECO_VENDA]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[VENDA_BRUTA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="VENDA_BRUTA"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[VENDA_BRUTA]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[VENDA_BRUTA]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[DESCONTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="DESCONTO"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[DESCONTO]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[DESCONTO]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[LUCRO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="LUCRO"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[LUCRO]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[LUCRO]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[VENDAS]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="VENDAS"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[VENDAS]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[VENDAS]" />
+                        <inputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].Columns[CUSTO_VENDA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="255"
+                          cachedName="CUSTO_VENDA"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[CUSTO_VENDA]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[CUSTO_VENDA]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[SEGMENTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="SEGMENTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PAIS" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PRODUTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PRODUTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[TIPO_DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="TIPO_DESCONTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[QTDE_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="QTDE_VENDA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PRECO_CUSTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PRECO_CUSTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[DATA_VENDA]"
+                          dataType="dbDate"
+                          name="DATA_VENDA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[PECO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PECO_VENDA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[VENDA_BRUTA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="VENDA_BRUTA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="DESCONTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[LUCRO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="LUCRO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[VENDAS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="VENDAS" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB].ExternalColumns[CUSTO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="CUSTO_VENDA" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\EX CARGA DF\CARGA STG\Destino STG.Outputs[Saída de Erro de Destino OLE DB]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Saída de Erro de Destino OLE DB"
+                      synchronousInputId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Destino STG.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Destino STG.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Destino STG.Outputs[Saída de Erro de Destino OLE DB].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\EX CARGA DF\CARGA STG\Origem STG"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="Origem OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; Todos os Direitos Reservados; http://www.microsoft.com/sql/support;7"
+                  description="Origem OLE DB"
+                  name="Origem STG"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="O tempo em segundos antes que um comando expire. Zero indica uma expiração infinita."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                      name="OpenRowset">[dbo].[STG_VENDAS]</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica a variável que contém o nome do objeto de banco de dados usado para abrir um conjunto de linhas."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="O comando SQL a ser executado."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.String"
+                      description="A variável que contém o comando SQL a ser executado."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica a página de código de coluna a ser usada quando não há informações de página de código disponíveis a partir da fonte de dados."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forca o uso do valor da propriedade DefaultCodePage durante a descrição dos dados de caractere."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica o modo usado para acessar o banco de dados."
+                      name="AccessMode"
+                      typeConverter="AccessMode">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Os mapeamentos entre os parâmetros no comando SQL e as variáveis."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\EX CARGA DF\CARGA STG\Origem STG.Connections[OleDbConnection]"
+                      connectionManagerID="{B53CB32C-0C2F-4BD7-8832-9BC5448FB6F3}:external"
+                      connectionManagerRefId="Project.ConnectionManagers[__.DW_09]"
+                      description="A conexão de tempo de execução OLE DB usada para acessar o banco de dados."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB]"
+                      name="Saída de Origem OLE DB">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[SEGMENTO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[SEGMENTO]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[SEGMENTO]"
+                          name="SEGMENTO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PAIS]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PAIS]"
+                          name="PAIS"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PRODUTO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PRODUTO]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PRODUTO]"
+                          name="PRODUTO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[TIPO_DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[TIPO_DESCONTO]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[TIPO_DESCONTO]"
+                          name="TIPO_DESCONTO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[QTDE_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[QTDE_VENDA]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[QTDE_VENDA]"
+                          name="QTDE_VENDA"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PRECO_CUSTO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PRECO_CUSTO]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PRECO_CUSTO]"
+                          name="PRECO_CUSTO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[DATA_VENDA]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[DATA_VENDA]"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[DATA_VENDA]"
+                          name="DATA_VENDA"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PECO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PECO_VENDA]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[PECO_VENDA]"
+                          name="PECO_VENDA"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[VENDA_BRUTA]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[VENDA_BRUTA]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[VENDA_BRUTA]"
+                          name="VENDA_BRUTA"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[DESCONTO]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[DESCONTO]"
+                          name="DESCONTO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[LUCRO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[LUCRO]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[LUCRO]"
+                          name="LUCRO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[VENDAS]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[VENDAS]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[VENDAS]"
+                          name="VENDAS"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[CUSTO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversão"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[CUSTO_VENDA]"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].Columns[CUSTO_VENDA]"
+                          name="CUSTO_VENDA"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[SEGMENTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="SEGMENTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PAIS" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PRODUTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PRODUTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[TIPO_DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="TIPO_DESCONTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[QTDE_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="QTDE_VENDA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PRECO_CUSTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PRECO_CUSTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[DATA_VENDA]"
+                          dataType="dbDate"
+                          name="DATA_VENDA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[PECO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="PECO_VENDA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[VENDA_BRUTA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="VENDA_BRUTA" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="DESCONTO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[LUCRO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="LUCRO" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[VENDAS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="VENDAS" />
+                        <externalMetadataColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB].ExternalColumns[CUSTO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="CUSTO_VENDA" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB]"
+                      isErrorOut="true"
+                      name="Saída de Erro de Origem OLE DB">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[SEGMENTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[SEGMENTO]"
+                          name="SEGMENTO" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PAIS]"
+                          name="PAIS" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PRODUTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PRODUTO]"
+                          name="PRODUTO" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[TIPO_DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[TIPO_DESCONTO]"
+                          name="TIPO_DESCONTO" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[QTDE_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[QTDE_VENDA]"
+                          name="QTDE_VENDA" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PRECO_CUSTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PRECO_CUSTO]"
+                          name="PRECO_CUSTO" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[DATA_VENDA]"
+                          dataType="dbDate"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[DATA_VENDA]"
+                          name="DATA_VENDA" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PECO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[PECO_VENDA]"
+                          name="PECO_VENDA" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[VENDA_BRUTA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[VENDA_BRUTA]"
+                          name="VENDA_BRUTA" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[DESCONTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[DESCONTO]"
+                          name="DESCONTO" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[LUCRO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[LUCRO]"
+                          name="LUCRO" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[VENDAS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[VENDAS]"
+                          name="VENDAS" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[CUSTO_VENDA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[CUSTO_VENDA]"
+                          name="CUSTO_VENDA" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Erro de Origem OLE DB].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\EX CARGA DF\CARGA STG.Paths[Saída de Origem OLE DB]"
+                  endId="Package\EX CARGA DF\CARGA STG\Destino STG.Inputs[Entrada de Destino OLE DB]"
+                  name="Saída de Origem OLE DB"
+                  startId="Package\EX CARGA DF\CARGA STG\Origem STG.Outputs[Saída de Origem OLE DB]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição]"
+      DTS:CreationName=""
+      DTS:DTSID="{18998E8C-01D4-40A9-87DD-7DD6ED78377C}"
+      DTS:From="Package\CARGA INICIAL"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição"
+      DTS:To="Package\EX CARGA DF" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{576298CB-4E02-451D-BFE8-B96DF4597A1B}"
+      DTS:From="Package\EX CARGA DF"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 1"
+      DTS:To="Package\CARGA DIMENSOES" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Restrição 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{9CB9DA63-AEBE-4168-859A-4876F7F67628}"
+      DTS:From="Package\CARGA DIMENSOES"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Restrição 2"
+      DTS:To="Package\CARGA FATO" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta seção CDATA contém as informações de layout do pacote. A seção inclui informações como coordenadas (x,y), largura e altura.-->
+<!--Se você editar manualmente esta seção e cometer algum erro, poderá excluí-la. -->
+<!--O pacote ainda poderá ser carregado normalmente, mas as informações de layout anteriores serão perdidas e o designer reorganizará automaticamente os elementos na superfície de design.-->
+<Objects
+  Version="8">
+  <!--Cada nó abaixo conterá propriedades que não afetam o comportamento em tempo de execução.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="179,42"
+          Id="Package\CARGA INICIAL\CARGA EM MASSA"
+          TopLeft="20.5,99" />
+        <EdgeLayout
+          Id="Package\CARGA INICIAL.PrecedenceConstraints[Restrição]"
+          TopLeft="110,56">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43"
+              Start="0,0"
+              End="0,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="209,42"
+          Id="Package\CARGA INICIAL\TRUNCAE STG_VENDAS"
+          TopLeft="5.5,14" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="220,196"
+          Size="220,239"
+          Id="Package\CARGA INICIAL"
+          TopLeft="9.44444444444446,20" />
+        <NodeLayout
+          Size="144,42"
+          Id="Package\EX CARGA DF\CARGA STG"
+          TopLeft="18,36" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="177,185"
+          Size="177,228"
+          Id="Package\EX CARGA DF"
+          TopLeft="251.888888888889,25.2777777777778" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição]"
+          TopLeft="119.444444444444,259">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="220.944444444444,-5.72222222222223"
+              Start="0,0"
+              End="220.944444444444,1.77777777777777">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.5"
+                    Point2="0,22.5"
+                    Point3="4,22.5" />
+                  <mssgle:LineSegment
+                    End="216.944444444444,22.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="216.944444444444,22.5"
+                    Point2="220.944444444444,22.5"
+                    Point3="220.944444444444,18.5" />
+                  <mssgle:LineSegment
+                    End="220.944444444444,1.77777777777777" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="184,42"
+          Id="Package\CARGA DIMENSOES\CARGA SEGMENTO"
+          TopLeft="26.888888888889,20.6666666666667" />
+        <NodeLayout
+          Size="146,42"
+          Id="Package\CARGA DIMENSOES\CARGA PAIS"
+          TopLeft="43.5555555555558,96.2222222222222" />
+        <EdgeLayout
+          Id="Package\CARGA DIMENSOES.PrecedenceConstraints[Restrição]"
+          TopLeft="117.722222222222,62.6666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.5555555555555"
+              Start="0,0"
+              End="0,26.0555555555555">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.0555555555555" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="176,42"
+          Id="Package\CARGA DIMENSOES\CARGA PRODUTO"
+          TopLeft="35.7777777777778,171.777777777778" />
+        <EdgeLayout
+          Id="Package\CARGA DIMENSOES.PrecedenceConstraints[Restrição 1]"
+          TopLeft="120.166666666667,138.222222222222">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.5555555555557"
+              Start="0,0"
+              End="0,26.0555555555557">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.0555555555557" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="215,42"
+          Id="Package\CARGA DIMENSOES\CARGA TIPO_DESCONTO"
+          TopLeft="35.7777777777778,244" />
+        <EdgeLayout
+          Id="Package\CARGA DIMENSOES.PrecedenceConstraints[Restrição 2]"
+          TopLeft="123.777777777778,213.777777777778">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="19.5,30.2222222222222"
+              Start="0,0"
+              End="19.5,22.7222222222222">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.1111111111111" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.1111111111111"
+                    Point2="0,15.1111111111111"
+                    Point3="4,15.1111111111111" />
+                  <mssgle:LineSegment
+                    End="15.5,15.1111111111111" />
+                  <mssgle:CubicBezierSegment
+                    Point1="15.5,15.1111111111111"
+                    Point2="19.5,15.1111111111111"
+                    Point3="19.5,19.1111111111111" />
+                  <mssgle:LineSegment
+                    End="19.5,22.7222222222222" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="283,342"
+          Size="283,385"
+          Id="Package\CARGA DIMENSOES"
+          TopLeft="482.222222222222,23.3333333333333" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 1]"
+          TopLeft="428.888888888889,139.277777777778">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="53.3333333333333,76.5555555555555"
+              Start="0,0"
+              End="45.8333333333333,76.5555555555555">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="22.6666666666667,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="22.6666666666667,0"
+                    Point2="26.6666666666667,0"
+                    Point3="26.6666666666667,4" />
+                  <mssgle:LineSegment
+                    End="26.6666666666667,72.5555555555555" />
+                  <mssgle:CubicBezierSegment
+                    Point1="26.6666666666667,72.5555555555555"
+                    Point2="26.6666666666667,76.5555555555555"
+                    Point3="30.6666666666667,76.5555555555555" />
+                  <mssgle:LineSegment
+                    End="45.8333333333333,76.5555555555555" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="191,42"
+          Id="Package\CARGA FATO\CARGA FATO"
+          TopLeft="27.4285714285714,36.7142857142857" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="224,185"
+          Size="224,228"
+          Id="Package\CARGA FATO"
+          TopLeft="854.285714285714,35.7142857142857" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Restrição 2]"
+          TopLeft="765.222222222222,215.833333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="89.0634920634922,-66.1190476190476"
+              Start="0,0"
+              End="81.5634920634922,-66.1190476190476">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="40.5317460317461,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="40.5317460317461,0"
+                    Point2="44.5317460317461,0"
+                    Point3="44.5317460317461,-4" />
+                  <mssgle:LineSegment
+                    End="44.5317460317461,-62.1190476190476" />
+                  <mssgle:CubicBezierSegment
+                    Point1="44.5317460317461,-62.1190476190476"
+                    Point2="44.5317460317461,-66.1190476190476"
+                    Point3="48.5317460317461,-66.1190476190476" />
+                  <mssgle:LineSegment
+                    End="81.5634920634922,-66.1190476190476" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\EX CARGA DF\CARGA STG">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="141,42"
+          Id="Package\EX CARGA DF\CARGA STG\Origem STG"
+          TopLeft="86,47" />
+        <NodeLayout
+          Size="142,42"
+          Id="Package\EX CARGA DF\CARGA STG\Destino STG"
+          TopLeft="318,50" />
+        <EdgeLayout
+          Id="Package\EX CARGA DF\CARGA STG.Paths[Saída de Origem OLE DB]"
+          TopLeft="227,69.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="91,0"
+              Start="0,0"
+              End="83.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="83.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\EX CARGA DF\CARGA STG\Origem STG">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\EX CARGA DF\CARGA STG\Destino STG">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32106.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "DW_ALUNA09", "DW_ALUNA09.dtproj", "{E4E364C1-8090-4086-986A-13A3DA940E56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4E364C1-8090-4086-986A-13A3DA940E56}.Development|Default.ActiveCfg = Development
+		{E4E364C1-8090-4086-986A-13A3DA940E56}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E44F5AF5-5A6F-4F2A-89E3-A8C51167F76A}
+	EndGlobalSection
+EndGlobal
